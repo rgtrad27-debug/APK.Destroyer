@@ -46,17 +46,7 @@ jobs:
         run: |
           if [ -f mauricio-financas-3d.png ]; then
             python -m pip install --quiet pillow
-            python - <<'PY'
-          from PIL import Image
-          from pathlib import Path
-          source = Image.open('mauricio-financas-3d.png').convert('RGBA')
-          base = Path('android/app/src/main/res')
-          for density, size in {'mdpi':48,'hdpi':72,'xhdpi':96,'xxhdpi':144,'xxxhdpi':192}.items():
-              folder = base / f'mipmap-{density}'
-              folder.mkdir(parents=True, exist_ok=True)
-              source.resize((size,size), Image.Resampling.LANCZOS).save(folder/'ic_launcher.png', optimize=True)
-              source.resize((size,size), Image.Resampling.LANCZOS).save(folder/'ic_launcher_round.png', optimize=True)
-            PY
+            python -c "from PIL import Image; from pathlib import Path; src=Image.open('mauricio-financas-3d.png').convert('RGBA'); base=Path('android/app/src/main/res'); [(base/f'mipmap-{d}').mkdir(parents=True,exist_ok=True) for d in ['mdpi','hdpi','xhdpi','xxhdpi','xxxhdpi']]; [(src.resize((s,s),Image.Resampling.LANCZOS).save(base/f'mipmap-{d}'/'ic_launcher.png',optimize=True),src.resize((s,s),Image.Resampling.LANCZOS).save(base/f'mipmap-{d}'/'ic_launcher_round.png',optimize=True)) for d,s in [('mdpi',48),('hdpi',72),('xhdpi',96),('xxhdpi',144),('xxxhdpi',192)]]"
           else
             echo "Custom icon file not present in repository; using Capacitor default icon."
           fi
