@@ -147,7 +147,7 @@ $('go').onclick=async function(){
 $('pw').onkeydown=function(e){if(e.key==='Enter')$('go').click()};
 function b64(buf){return btoa(String.fromCharCode.apply(null,new Uint8Array(buf)))}
 function unb64(s){return Uint8Array.from(atob(s),function(c){return c.charCodeAt(0)})}
-function bioAuth(auto){
+async function bioAuth(auto){
   if(window.AndroidFinance){
     if(!S.hash){if(!auto)$('err').textContent='Crie a senha primeiro.';return}
     window.AndroidFinance.authenticateBiometric();
