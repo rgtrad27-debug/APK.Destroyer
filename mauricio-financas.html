@@ -79,8 +79,8 @@ h2{font-size:16px;margin:0 0 12px}
   <h1 id="lt">Olá</h1>
   <p class="sub" id="ls">Entre para ver suas finanças.</p>
   <div class="field hide" id="nmw"><input id="nm" type="text" placeholder="Seu nome" autocomplete="name" style="padding-right:16px"></div>
-  <div class="field"><input id="pw" type="password" placeholder="Senha" autocomplete="current-password"><button class="eye" id="eye" aria-label="Mostrar senha">👁</button></div>
-  <div class="field hide" id="pw2w"><input id="pw2" type="password" placeholder="Repita a senha"></div>
+  <div class="field"><input id="pw" type="password" placeholder="Senha" autocomplete="current-password"><button class="eye" id="eye" type="button" aria-label="Mostrar senha" aria-pressed="false">👁</button></div>
+  <div class="field hide" id="pw2w"><input id="pw2" type="password" placeholder="Repita a senha" autocomplete="new-password"><button class="eye" id="eye2" type="button" aria-label="Mostrar confirmação da senha" aria-pressed="false">👁</button></div>
   <div class="err" id="err"></div>
   <button class="btn" id="go">Entrar</button>
   <button class="btn alt" id="bio">Entrar com biometria</button>
@@ -121,7 +121,7 @@ async function sha(s){try{var b=await crypto.subtle.digest('SHA-256',new TextEnc
 /* ---------- LOGIN ---------- */
 function showLogin(){
   $('app').classList.add('hide');$('fab').classList.add('hide');$('bar').classList.add('hide');$('sheet').classList.add('hide');
-  $('login').classList.remove('hide');$('pw').value='';$('pw2').value='';$('err').textContent='';
+  $('login').classList.remove('hide');$('pw').value='';$('pw2').value='';$('pw').type='password';$('pw2').type='password';$('eye').textContent='👁';$('eye2').textContent='👁';$('eye').setAttribute('aria-pressed','false');$('eye2').setAttribute('aria-pressed','false');$('err').textContent='';
   var first=!S.hash;
   $('pw2w').classList.toggle('hide',!first);
   $('nmw').classList.toggle('hide',!!S.name);
@@ -133,7 +133,9 @@ function showLogin(){
   $('bio').textContent=S.cred?'Entrar com biometria':'Ativar biometria';
 }
 function enter(){$('uname').textContent=S.name||'';$('login').classList.add('hide');$('app').classList.remove('hide');$('fab').classList.remove('hide');$('bar').classList.remove('hide');render()}
-$('eye').onclick=function(){var t=$('pw').type==='password';$('pw').type=t?'text':'password';$('pw2').type=t?'text':'password';$('eye').textContent=t?'🙈':'👁'};
+function togglePassword(inputId,buttonId){var input=$(inputId),button=$(buttonId),show=input.type==='password';input.type=show?'text':'password';button.textContent=show?'🙈':'👁';button.setAttribute('aria-pressed',show?'true':'false');button.setAttribute('aria-label',show?'Ocultar senha':'Mostrar senha')}
+$('eye').onclick=function(){togglePassword('pw','eye')};
+$('eye2').onclick=function(){togglePassword('pw2','eye2')};
 $('go').onclick=async function(){
   var p=$('pw').value;
   if(!S.hash){
