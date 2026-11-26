@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0f2a2e">
-<title>Minhas Finanças</title>
+<title>Maurício Finanças</title>
 <style>
 :root{--bg:#0f2a2e;--bg2:#163a3f;--card:#1b454b;--tx:#eef6f4;--mut:#9fbfbb;--ac:#f2c14e;--ok:#6fe0a8;--bad:#ff8a7a;--r:20px;color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
@@ -113,6 +113,8 @@ var KEY='mauricio_fin_v1',S,view={m:'m',y:new Date().getFullYear(),mo:new Date()
 function load(){try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){}S=S||{tx:[],hash:null,cred:null}}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
 load();
+S.name='Maurício';
+save();
 var $=function(i){return document.getElementById(i)};
 var brl=function(v){return v.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})};
 var MES=['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
@@ -124,10 +126,10 @@ function showLogin(){
   $('login').classList.remove('hide');$('pw').value='';$('pw2').value='';$('pw').type='password';$('pw2').type='password';$('eye').textContent='👁';$('eye2').textContent='👁';$('eye').setAttribute('aria-pressed','false');$('eye2').setAttribute('aria-pressed','false');$('err').textContent='';
   var first=!S.hash;
   $('pw2w').classList.toggle('hide',!first);
-  $('nmw').classList.toggle('hide',!!S.name);
-  $('lg').textContent=S.name?S.name.charAt(0).toUpperCase():'$';
-  $('lt').textContent=first?'Bem-vindo':'Olá'+(S.name?', '+S.name:'');
-  $('ls').textContent=first?'Informe seu nome e crie uma senha para proteger seus dados.':(S.name?'Entre para ver suas finanças.':'Informe seu nome para continuar.');
+  $('nmw').classList.add('hide');
+  $('lg').textContent='M';
+  $('lt').textContent=first?'Bem-vindo, Maurício':'Olá, Maurício';
+  $('ls').textContent=first?'Crie uma senha para proteger seus dados.':'Entre para ver suas finanças.';
   $('go').textContent=first?'Criar senha':'Entrar';
   $('bio').classList.toggle('hide',first&&false);
   $('bio').textContent=S.cred?'Entrar com biometria':'Ativar biometria';
@@ -139,12 +141,11 @@ $('eye2').onclick=function(){togglePassword('pw2','eye2')};
 $('go').onclick=async function(){
   var p=$('pw').value;
   if(!S.hash){
-    var nm=$('nm').value.trim();if(!nm){$('err').textContent='Digite seu nome.';return}
     if(p.length<4){$('err').textContent='Use pelo menos 4 caracteres.';return}
     if(p!==$('pw2').value){$('err').textContent='As senhas não conferem.';return}
-    S.name=nm;S.hash=await sha(p);save();enter();return;
+    S.hash=await sha(p);save();enter();return;
   }
-  if(await sha(p)===S.hash){if(!S.name){var n2=$('nm').value.trim();if(!n2){$('err').textContent='Digite seu nome.';return}S.name=n2;save()}enter()}else $('err').textContent='Senha incorreta.';
+  if(await sha(p)===S.hash){enter()}else $('err').textContent='Senha incorreta.';
 };
 $('pw').onkeydown=function(e){if(e.key==='Enter')$('go').click()};
 function b64(buf){return btoa(String.fromCharCode.apply(null,new Uint8Array(buf)))}
